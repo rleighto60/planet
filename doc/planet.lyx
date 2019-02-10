@@ -1,0 +1,577 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family rmdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+PLANET GENERATOR
+\end_layout
+
+\begin_layout Standard
+This program is not public domain.
+ It may not be distributed, sold or used in any commercial software without
+ prior consent.
+\end_layout
+
+\begin_layout Standard
+Copyright 1991-2016 by Russell Leighton
+\end_layout
+
+\begin_layout Section
+INTRODUCTION:
+\end_layout
+
+\begin_layout Standard
+This is version 3.0 and contains many enhancements over previous versions.
+\end_layout
+
+\begin_layout Standard
+Simply put, this program will map any picture (any resolution, any depth
+ upto to the memory limit) around a sphere (hence forth referred to as a
+ planet).
+ The planet is then shaded based on the location of a light source.
+ The mapping is done by equating constant latitude and longitude lines around
+ the planet with constant horizontal and vertical lines on the map.
+ The planet view is computed by applying a transformation based on inputted
+ planet rotation angles.
+ The result can be saved as a 24 bit image at any resolution.
+\end_layout
+
+\begin_layout Standard
+The method used to shade the planet involves taking the cosine of the angle
+ between the normal vector on the surface of the planet and the light source
+ vector and multiplying each color component with the result.
+\end_layout
+
+\begin_layout Standard
+Both the planet rotation and the light source position are specified in
+ terms of rotations about the three axes, x, y, and z.
+ Counterclockwise rotation is positive and clockwise is negative.
+ These angles can be specified in any order.
+ The resulting rotations are very dependant on this order of input.
+\end_layout
+
+\begin_layout Standard
+Any number of planets (or moons, as discussed later) may be generated in
+ one image.
+ Also, any number of pictures may be placed in the image.
+ Both planets and pictures may be placed anywhere on the screen by specifing
+ the center location.
+\end_layout
+
+\begin_layout Standard
+An option for generating moons has been added to allow for logical placement
+ of planets with respect to each other.
+ If a moon is specified then its location is determined from a distance
+ from the planet center and the rotation of the respective planet.
+\end_layout
+
+\begin_layout Section
+RUNNING PLANET:
+\end_layout
+
+\begin_layout Standard
+To run from the Workbench double click on the planet icon.
+ To run from a CLI window just type:
+\end_layout
+
+\begin_layout Standard
+-> [run] planet
+\end_layout
+
+\begin_layout Subsection
+Embedded REXX Macro Language
+\end_layout
+
+\begin_layout Standard
+This version of Planet registers itself as an embedded Rexx interpreter
+ which will process commands not directly understood by the Rexx macro processor.
+ This effectivily adds all the capabilities of the Rexx macro language to
+ Planet program macros.
+\end_layout
+
+\begin_layout Section
+THE COMMANDS:
+\end_layout
+
+\begin_layout Subsection
+reset(ZRES)
+\end_layout
+
+\begin_layout Standard
+This command will reset all parameters to the default values.
+ This command is useful if a series of images need to be created from a
+ single script file.
+ Of course this command should be specified before any other commands in
+ the sequence.
+\end_layout
+
+\begin_layout Standard
+The ZRES argument specifies the 
+\begin_inset Formula $z_{resolution}$
+\end_inset
+
+, a virtual distance from the observer to the center of focus.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'reset(1000)'
+\end_layout
+
+\begin_layout Subsection
+map(FILENAME,FULL/HALF,OVERLAP,TRANSPARENCY,THRESHOLD)
+\end_layout
+
+\begin_layout Standard
+The FILENAME argument specifies a file containing the map to be used for
+ generating the planet.
+\end_layout
+
+\begin_layout Standard
+By default, for planets, the map is wrapped around half the sphere and duplicate
+d on the other half (in reverse).
+ If you would like the map to be wrapped around the full sphere then specify
+ FULL.
+\end_layout
+
+\begin_layout Standard
+The OVERLAP is the amount of pixels to overlap at the "seam".
+ This overlap region will be color interpolated and will result in a smearing
+ of color in this "seam" region.
+ The overall effect is to reduce the apparent "seam" when the edges of the
+ map do not exactly match.
+\end_layout
+
+\begin_layout Standard
+TRANSPARENCY is the degree of transparency of the image.
+ A value of 0.0 will make the image totally opaque (i.e.
+ it will overwrite everything) except where the map is black (this provides
+ for a masking ability).
+ This in effect will make the map image appear as if it is in the foreground.
+ However, as this value approaches 1.0 the overall map image will become
+ more transparent with 1.0 being fully transparent (fairly useless).
+\end_layout
+
+\begin_layout Standard
+This command can be placed anywhere before the GENERATE command.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'map(fractal.pic,full,64)'
+\end_layout
+
+\begin_layout Subsection
+image
+\end_layout
+
+\begin_layout Standard
+The effect of this command is to take the specified map image and size it
+ fit the currently set resolution (set by 'view').
+\end_layout
+
+\begin_layout Standard
+This command can be placed anywhere before the GENERATE command.
+\end_layout
+
+\begin_layout Subsection
+planet(RADIUS,DISTANCE,ATMO,ANGLE(s),...)
+\end_layout
+
+\begin_layout Standard
+The RADIUS argument indicates the size of the planet.
+ The DISTANCE argument specifies the distance between the planet and the
+ viewpoint.
+\end_layout
+
+\begin_layout Standard
+The radius and distance are specified in "boxels".
+ A boxel is defined as a cubic pixel (or the three dimensional equivilent
+ of a pixel).
+ In the case of this program a boxel is further defined as a unit such that
+ at a distance equal to the 
+\begin_inset Formula $z_{resolution}$
+\end_inset
+
+ (see the reset command above) each displayed boxel is exactly one screen
+ pixel in height.
+ The further away a boxel is from the viewpoint the smaller it will appear
+ on the screen.
+ For example, if the 
+\begin_inset Formula $z_{resolution}$
+\end_inset
+
+ is set to 1000 and the planet being generated had a radius of 200 boxels,
+ with the viewpoint set at a distance of 1000 boxels the planet would appear
+ to fill the screen from top to bottom.
+ The radius and distance are related to the displayed radius by the following
+ equation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $displayed\,radius=$
+\end_inset
+
+
+\begin_inset Formula $\frac{radius*z_{resolution}}{distance}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The width of a boxel is assumed to be exactly the same as its height.
+ Since this is not true of pixels there will not be the same corresponce
+ between boxel and pixel width as there is between the heights.
+ The relationship between boxel and pixel width (with the viewpoint set
+ at the 
+\begin_inset Formula $z_{resolution}$
+\end_inset
+
+) is the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $boxel\,width=(pixel\,width)*\frac{x_{aspect}}{y_{aspect}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the x and y aspect ratios are selected based on the set x and y resolution
+s and the display modes.
+ The reason for doing this is to insure that the generated planet would
+ come as close as possible to a true sphere.
+\end_layout
+
+\begin_layout Standard
+The above discussion only serves to highlight the relationship between distance,
+ radius and the displayed radius.
+ The only effect the distance argument has is on the displayed radius, therefore
+, if a specific radius is required then set the distance equal to the 
+\begin_inset Formula $z_{resolution}$
+\end_inset
+
+.
+ However, distance does become important if any moons are generated as will
+ be discussed below.
+\end_layout
+
+\begin_layout Standard
+The ATMO argument specifies the width of the atmosphere - a transition between
+ the planet surface and empty (transparent) space.
+\end_layout
+
+\begin_layout Standard
+The planet rotation angles are input by first specifing the axis of rotation
+ (X, Y, or Z) then the angle.
+ These angles may be specified in any order.
+ An angle represents a rotation referenced to a rotated or local coordinate
+ system, therefore, the order that these angles are input greatly influences
+ the outcome of the total rotation.
+ A positive angle indicates a counterclockwise rotation.
+\end_layout
+
+\begin_layout Standard
+Any planet generated will overwrite any existing image.
+ Therefore, planets will always appear to be in the foreground if generated
+ last.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'planet(140,1000,5,x20,z30,y-10)'
+\end_layout
+
+\begin_layout Subsection
+moon(RADIUS,DISTANCE,ANGLE(s),...)
+\end_layout
+
+\begin_layout Standard
+The RADIUS argument indicates the size of the moon.
+ The DISTANCE argument specifies the distance between the moon and a previously
+ specified planet.
+ The moon is always placed the specified distance along the z-axis for the
+ planet.
+ Therefore, the rotation of the corresponding planet will have a big effect
+ on the placement of the moon.
+\end_layout
+
+\begin_layout Standard
+The radius and distance are specified in "boxels" (discussed under the 'planet'
+ command).
+\end_layout
+
+\begin_layout Standard
+The moon rotation angles are input by first specifing the axis of rotation
+ (X, Y, or Z) then the angle.
+ These angles may be specified in any order.
+ An angle represents a rotation referenced to a rotated or local coordinate
+ system, therefore, the order that these angles are input greatly influences
+ the outcome of the total rotation.
+ A positive angle indicates a counterclockwise rotation.
+ Any angles specified are in addition to the angle of rotation specified
+ for the associated planet (in other words initially the moon will have
+ the same rotation as the planet).
+\end_layout
+
+\begin_layout Standard
+Depending on the rotation of the associated planet the moon will either
+ appear on the front side or back side of the planet.
+ The program does not keep track of the various objects that may be on the
+ screen, therefore, an assumption was made that if the moon appears in front
+ of the planet then it will be placed in front of any existing image.
+ If the moon appears behind the planet then it will be placed behind any
+ existing image.
+ Therefore, if a moon is to be generated it is suggested that the planet
+ and accompanying moon be generated before any image or other planets are
+ generated.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'moon(30,200,y20)'
+\end_layout
+
+\begin_layout Subsection
+light(DIFFUSE,ANGLE(s),...)
+\end_layout
+
+\begin_layout Standard
+With this command the light source can be placed at any rotation angle around
+ the associated planet.
+ This angle represents a rotation about the planet's y-axis only.
+ If no light source rotation angle is specified then the light would appear
+ to come from the positive z-axis direction.
+ Therefore, any specified light source rotation will result in an apparent
+ additional rotation.
+ While this may not seem to be the most logical method, it works and can
+ be circumvented by proper selection of the planet (and moon) rotation.
+\end_layout
+
+\begin_layout Standard
+This light source rotation remains in effect until reset or another planet
+ is generated.
+ Therefore, if a moon is subsequently generated the light source will appear
+ in the same location (unless respecified or the moon is rotated further).
+\end_layout
+
+\begin_layout Standard
+This command should be placed after any 'planet' command, otherwise can
+ be placed anywhere.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'light(202020,x15,z20,y20)'
+\end_layout
+
+\begin_layout Subsection
+ring(RADIUS1,RADIUS2,SHADE)
+\end_layout
+
+\begin_layout Standard
+Rings are created by "wrapping" the currently specified map image around
+ a ring bounded by the specified radii.
+ A shadow is created based on the location of the light source and radius
+ of the planet or moon associated with the ring.
+\end_layout
+
+\begin_layout Standard
+The radii are specified in units of boxels (as described above).
+ These radii are distances from the center of the planet to the inside radius
+ (RADIUS1) and outside radius (RADIUS2) of the ring.
+\end_layout
+
+\begin_layout Standard
+The SHADE argument specifies the degree of brightness to be applied to the
+ ring plane.
+ A value of 0 will make the rings invisible (somewhat impractical) and a
+ value of 100 will make the rings totally bright.
+ Of course any value between 0 and 100 may be specified resulting in various
+ degrees of brightness.
+\end_layout
+
+\begin_layout Standard
+This command should be placed after any 'planet' or 'moon' command.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'ring(160,200,40)'
+\end_layout
+
+\begin_layout Subsection
+center(X,Y)
+\end_layout
+
+\begin_layout Standard
+This command allows placement of the planet (and moon) or image anywhere
+ on the screen.
+ If not specified or no values are given then the default (0,0) will be
+ used.
+\end_layout
+
+\begin_layout Standard
+This command can be placed anywhere before the 'generate' command and will
+ remain in effect until reset.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'center(100,300)'
+\end_layout
+
+\begin_layout Subsection
+view(XRES,YRES,DANG,ASPECT)
+\end_layout
+
+\begin_layout Standard
+This command defines the view resolution, shift angle, and aspect ratio.
+ The resolution (XRES, YRES) defines the screen resolution of the generated
+ image.
+ The shift angle (DANG), if specified as a positive non-zero value, will
+ result in two side-by-side images (doubling the x resolution of the generated
+ image) with each image generated using a screen vertical (y-axis) angular
+ shift.
+ The left image is generated with a shift of -DANG/2 and the right image
+ with a shift of +DANG/2.
+ The resulting stereoscopic image pair may be viewed using a VR headset
+ (e.g., Google Cardboard).
+ Note that the generate command DEPTH parameter will result in an additional
+ screen shift giving the appearance of an out-of-screen depth shift for
+ the generated image.
+ A zero value (the default value) for DANG will result in a single image
+ generated.
+\end_layout
+
+\begin_layout Standard
+An example of this command is:
+\end_layout
+
+\begin_layout Standard
+'view(640,400)'
+\end_layout
+
+\begin_layout Subsection
+save(FILENAME)
+\end_layout
+
+\begin_layout Subsection
+generate(DEPTH)
+\end_layout
+
+\begin_layout Standard
+This command will begin the generation of the planet, moon, ring or image.
+\end_layout
+
+\begin_layout Standard
+This command must be placed at the end of a sequence of commands (but before
+ exit of course).
+ Each generate command will place the specified planet, moon, or image on
+ the existing picture unless a 'reset' command is issued at the beginning
+ of the sequence.
+ If the DEPTH parameter is specified with a non-zero value the resulting
+ image will be shifted.
+ Note that the perceived depth as a result will only be apparent if a 3D
+ image is generated (i.e., the view command DANG parameter is specified as
+ a non-zero value).
+ The left image is generated with a shift of -DEPTH/2 and the right image
+ with a shift of +DEPTH/2.
+\end_layout
+
+\end_body
+\end_document
