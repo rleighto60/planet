@@ -1,6 +1,8 @@
 #
-test.jpg:  test.rexx
-	../bin/planet test.rexx
+default: blue.jpg earth.jpg jupiter.jpg
+
+%.jpg: %.rexx
+	../bin/planet $<
 
 clean:
 	rm -f *.jpg
