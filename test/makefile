@@ -1,5 +1,5 @@
 #
-default: blue.jpg earth.jpg jupiter.jpg
+default: test.jpg blue.jpg earth.jpg jupiter.jpg
 
 %.jpg: %.rexx
 	../bin/planet $<

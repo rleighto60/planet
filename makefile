@@ -3,6 +3,8 @@ default:
 	mkdir -p bin
 	cd src; make
 	cd test; make
+
+doc:
 	cd doc; make
 
 clean:
