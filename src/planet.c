@@ -941,7 +941,7 @@ APIRET APIENTRY planetHandler(
 *******************************************************************************/
         case 6:
             rb = gb = bb = 0;
-            wrap = 1;
+            wrap = 2;
             olap = 0;
             tran = 0;
             if((argn > 2) && ((args[2][0] | ' ') == 'f')) wrap = 2;

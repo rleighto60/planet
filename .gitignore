@@ -2,4 +2,4 @@
 **/*.o
 **/*.pdf
 bin/*
-
+test/*.jpg
