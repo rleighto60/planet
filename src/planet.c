@@ -941,11 +941,11 @@ APIRET APIENTRY planetHandler(
 *******************************************************************************/
         case 6:
             rb = gb = bb = 0;
-            wrap = 2;
+            wrap = 1;
             olap = 0;
             tran = 0;
-            if((argn > 2) && ((args[2][0] | ' ') == 'f')) wrap = 2;
-            else wrap = 1;
+            if((argn > 2) && ((args[2][0] | ' ') == 'h')) wrap = 1;
+            else wrap = 2;
             if(argn > 3) sscanf(args[3],"%d",&olap);
             if(argn > 4) sscanf(args[4],"%d",&tran);
             if(argn > 5) sscanf(args[5],"%2x%2x%2x",&rb,&gb,&bb);
