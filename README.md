@@ -18,4 +18,4 @@ An option for generating moons has been added to allow for logical placement of 
 
 * [The Regina REXX interpreter - regina-rexx version 3.9.3](https://sourceforge.net/projects/regina-rexx/files/regina-rexx/3.9.3/)
   * [development files - libregina3-dev](https://sourceforge.net/projects/regina-rexx/files/regina-rexx/3.9.3/)
-* [Optional] - [Netpbm](https://http://netpbm.sourceforge.net/)
+* [Optional] - [Netpbm](https://netpbm.sourceforge.net/)
