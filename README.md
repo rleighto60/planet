@@ -2,6 +2,8 @@
 
 ![intro](blue.jpg)
 
+![blue.rexx](test/blue.rexx)
+
 ## Introduction
 
 Simply put, this program will map any picture (any resolution, any depth upto to the memory limit) around a sphere (hence forth referred to as a planet). The planet is then shaded based on the location of a light source. The mapping is done by equating constant latitude and longitude lines around the planet with constant horizontal and vertical lines on the map. The planet view is computed by applying a transformation based on inputted planet rotation angles. The result can be saved as a 24 bit image at any resolution.
