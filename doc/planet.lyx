@@ -28,7 +28,16 @@
 \index_command default
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry true
 \use_package amsmath 1
@@ -60,8 +69,8 @@
 \bottommargin 1in
 \secnumdepth 3
 \tocdepth 3
-\paragraph_separation indent
-\paragraph_indentation default
+\paragraph_separation skip
+\defskip medskip
 \quotes_language english
 \papercolumns 1
 \papersides 1
@@ -86,7 +95,16 @@ This program is not public domain.
 \end_layout
 
 \begin_layout Standard
-Copyright 1991-2016 by Russell Leighton
+Copyright 1991-2021 by Russell Leighton
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -190,12 +208,12 @@ The ZRES argument specifies the
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'reset(1000)'
+\begin_layout LyX-Code
+reset(1000)
 \end_layout
 
 \begin_layout Subsection
-map(FILENAME,FULL/HALF,OVERLAP,TRANSPARENCY,THRESHOLD)
+map(FILENAME, FULL/HALF, OVERLAP, TRANSPARENCY, THRESHOLD)
 \end_layout
 
 \begin_layout Standard
@@ -223,12 +241,18 @@ The OVERLAP is the amount of pixels to overlap at the "seam".
 
 \begin_layout Standard
 TRANSPARENCY is the degree of transparency of the image.
- A value of 0.0 will make the image totally opaque (i.e.
+ A value of 0 will make the image totally opaque (i.e.
  it will overwrite everything) except where the map is black (this provides
  for a masking ability).
  This in effect will make the map image appear as if it is in the foreground.
- However, as this value approaches 1.0 the overall map image will become
- more transparent with 1.0 being fully transparent (fairly useless).
+ However, as this value approaches 255 the overall map image will become
+ more transparent with 255 being fully transparent (fairly useless).
+\end_layout
+
+\begin_layout Standard
+The THRESHOLD is a six digit hex value for color threshold (rrggbb) where
+ any color in the map falling below this threshold will be treated as transparen
+t.
 \end_layout
 
 \begin_layout Standard
@@ -239,8 +263,8 @@ This command can be placed anywhere before the GENERATE command.
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'map(|pngtopnm maps/planet.png,full,64)'
+\begin_layout LyX-Code
+map(|jpegtopnm map/brown-ring.jpg, full, 0, 100, 010101)
 \end_layout
 
 \begin_layout Subsection
@@ -257,7 +281,7 @@ This command can be placed anywhere before the GENERATE command.
 \end_layout
 
 \begin_layout Subsection
-planet(RADIUS,DISTANCE,ATMO,ANGLE(s),...)
+planet(RADIUS, DISTANCE, ATMO, ANGLE(s),...)
 \end_layout
 
 \begin_layout Standard
@@ -365,12 +389,12 @@ Any planet generated will overwrite any existing image.
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'planet(140,1000,5,x20,z30,y-10)'
+\begin_layout LyX-Code
+planet(140, 1000, 5, x20, z30, y-10)
 \end_layout
 
 \begin_layout Subsection
-moon(RADIUS,DISTANCE,ANGLE(s),...)
+moon(RADIUS, DISTANCE, ANGLE(s),...)
 \end_layout
 
 \begin_layout Standard
@@ -418,24 +442,35 @@ Depending on the rotation of the associated planet the moon will either
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'moon(30,200,y20)'
+\begin_layout LyX-Code
+moon(30, 200, y20)
 \end_layout
 
 \begin_layout Subsection
-light(DIFFUSE,ANGLE(s),...)
+light(AMBIENT, ANGLE(s),...)
 \end_layout
 
 \begin_layout Standard
-With this command the light source can be placed at any rotation angle around
- the associated planet.
- This angle represents a rotation about the planet's y-axis only.
- If no light source rotation angle is specified then the light would appear
+With this command the light source can be placed by specifying rotation
+ angles around the associated planet.
+ If no light source rotation angles are specified then the light would appear
  to come from the positive z-axis direction.
- Therefore, any specified light source rotation will result in an apparent
- additional rotation.
- While this may not seem to be the most logical method, it works and can
- be circumvented by proper selection of the planet (and moon) rotation.
+\end_layout
+
+\begin_layout Standard
+The AMBIENT argument is a six digit hex value for an ambient color (rrggbb)
+ which will be applied to all shaded areas giving the appearance of an ambient
+ lighting effect.
+\end_layout
+
+\begin_layout Standard
+The light source rotation angles are input by first specifing the axis of
+ rotation (X, Y, or Z) then the angle.
+ These angles may be specified in any order.
+ An angle represents a rotation referenced to a rotated or local coordinate
+ system, therefore, the order that these angles are input greatly influences
+ the outcome of the total rotation.
+ A positive angle indicates a counterclockwise rotation.
 \end_layout
 
 \begin_layout Standard
@@ -454,12 +489,12 @@ This command should be placed after any 'planet' command, otherwise can
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'light(202020,x15,z20,y20)'
+\begin_layout LyX-Code
+light(202020, x15, z20, y20)
 \end_layout
 
 \begin_layout Subsection
-ring(RADIUS1,RADIUS2,SHADE)
+ring(RADIUS1, RADIUS2, SHADE)
 \end_layout
 
 \begin_layout Standard
@@ -492,12 +527,12 @@ This command should be placed after any 'planet' or 'moon' command.
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'ring(160,200,40)'
+\begin_layout LyX-Code
+ring(160, 200, 40)
 \end_layout
 
 \begin_layout Subsection
-center(X,Y)
+center(X, Y)
 \end_layout
 
 \begin_layout Standard
@@ -516,12 +551,12 @@ This command can be placed anywhere before the 'generate' command and will
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'center(100,300)'
+\begin_layout LyX-Code
+center(100, 300)
 \end_layout
 
 \begin_layout Subsection
-view(XRES,YRES,DANG,ASPECT)
+view(XRES, YRES, DANG, ASPECT)
 \end_layout
 
 \begin_layout Standard
@@ -547,8 +582,8 @@ This command defines the view resolution, shift angle, and aspect ratio.
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'view(640,400)'
+\begin_layout LyX-Code
+view(640, 400)
 \end_layout
 
 \begin_layout Subsection
@@ -570,8 +605,8 @@ The FILENAME argument specifies a file to save the resulting image to.
 An example of this command is:
 \end_layout
 
-\begin_layout Standard
-'save(|pnmtojpeg -quality 90 > output.jpg)'
+\begin_layout LyX-Code
+save(|pnmtojpeg -quality 90 > output.jpg)
 \end_layout
 
 \begin_layout Subsection
@@ -595,6 +630,94 @@ This command must be placed at the end of a sequence of commands (but before
  a non-zero value).
  The left image is generated with a shift of -DEPTH/2 and the right image
  with a shift of +DEPTH/2.
+\end_layout
+
+\begin_layout Section
+Example
+\end_layout
+
+\begin_layout LyX-Code
+/* macro for Planet */
+\end_layout
+
+\begin_layout LyX-Code
+reset 1400 view 1600 1200
+\end_layout
+
+\begin_layout LyX-Code
+/* define map composed of stars */
+\end_layout
+
+\begin_layout LyX-Code
+'map(|ppmforge -night -stars 200 -saturation 250 -xsize 1600 -ysize 1200)'
+\end_layout
+
+\begin_layout LyX-Code
+/* generate backdrop image */
+\end_layout
+
+\begin_layout LyX-Code
+image
+\end_layout
+
+\begin_layout LyX-Code
+generate
+\end_layout
+
+\begin_layout LyX-Code
+/* define planet map */
+\end_layout
+
+\begin_layout LyX-Code
+'map(|jpegtopnm map/blue-map.jpg,full,40)'
+\end_layout
+
+\begin_layout LyX-Code
+light 202020 'z-25' y45 x35
+\end_layout
+
+\begin_layout LyX-Code
+/* generate planet */
+\end_layout
+
+\begin_layout LyX-Code
+planet 140 800 6 'z-20' y45 x15
+\end_layout
+
+\begin_layout LyX-Code
+generate
+\end_layout
+
+\begin_layout LyX-Code
+/* define ring map */
+\end_layout
+
+\begin_layout LyX-Code
+'map(|jpegtopnm map/brown-ring.jpg,full,0,100,010101)'
+\end_layout
+
+\begin_layout LyX-Code
+light 404040 'z-25' y45 x35
+\end_layout
+
+\begin_layout LyX-Code
+/* generate ring */
+\end_layout
+
+\begin_layout LyX-Code
+ring 220 340 100
+\end_layout
+
+\begin_layout LyX-Code
+generate
+\end_layout
+
+\begin_layout LyX-Code
+'save(|pnmtojpeg -quality 90 > blue.jpg)'
+\end_layout
+
+\begin_layout LyX-Code
+exit 
 \end_layout
 
 \end_body
