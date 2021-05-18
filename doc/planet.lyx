@@ -641,7 +641,11 @@ Example
 \end_layout
 
 \begin_layout LyX-Code
-reset 1400 view 1600 1200
+reset 1400
+\end_layout
+
+\begin_layout LyX-Code
+view 1600 1200
 \end_layout
 
 \begin_layout LyX-Code

@@ -26,4 +26,4 @@ Additionally, rings may be generated, relative to a planet, by specifying an ima
 
 ## Documentation
 
-![user guide](planet.pdf)
+![User Guide](planet.pdf)
