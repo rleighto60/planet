@@ -10,14 +10,14 @@
       \ \/ / /                                               \ \/ / /
        \/_/_/                                                 \/_/_/
 
-================================================================================
+ ================================================================================
 
-This program is not public domain.  It may not be distributed, sold or used in 
-any commercial software without prior consent. 
+ This program is not public domain.  It may not be distributed, sold or used in
+ any commercial software without prior consent.
 
-Copyright © 1990,1991,1992 by Russell Leighton
+ Copyright ï¿½ 1990,1991,1992 by Russell Leighton
 
-=============================================================================*/
+ =============================================================================*/
 
 #include <stdio.h>
 
@@ -48,7 +48,7 @@ SHVBLOCK result = {
     0
 };
 
-APIRET APIENTRY planetHandler(PRXSTRING, PUSHORT, PRXSTRING);
+APIRET APIENTRY planetHandler( PRXSTRING, PUSHORT, PRXSTRING);
 
 #define RED        0x0001
 #define GREEN      0x0002
@@ -57,6 +57,7 @@ APIRET APIENTRY planetHandler(PRXSTRING, PUSHORT, PRXSTRING);
 #define RMAP       0x0010
 #define GMAP       0x0020
 #define BMAP       0x0040
+#define AMAP       0x0080
 
 #define PLNT       0x0001
 #define MOON       0x0002
@@ -72,22 +73,22 @@ char hostname[] = "PLANET";
 int close_down = FALSE;
 int outstanding = 0;
 
-unsigned int mask=0,type=0,made=0;
-int rc,gc,bc,rb,gb,bb;
-float ra,ga,ba;
-int dang,wrap,pixel;
-int rad,prad,mrad,rad1,rad2,shad,olap,tran;
-float trans[3][3],moon[3][3];
-float light[3][3],shade[3][3];
+unsigned int mask = 0, type = 0, made = 0;
+int rc, gc, bc;
+float ra, ga, ba;
+int dang, wrap, pixel;
+int rad, prad, mrad, rad1, rad2, shad, olap;
+float trans[3][3], moon[3][3];
+float light[3][3], shade[3][3];
 float aspect;
-int pdist,mdist,patmo;
-int print=FALSE;
-int pipe=FALSE;
-long xres,yres,zres,vres,wres,xcen,ycen;
-UBYTE *rbuf,*gbuf,*bbuf,*abuf;
-UBYTE *rmap,*gmap,*bmap;
+int pdist, mdist, patmo;
+int print = FALSE;
+int pipe = FALSE;
+long xres, yres, zres, vres, wres, xcen, ycen;
+UBYTE *rbuf, *gbuf, *bbuf, *abuf;
+UBYTE *rmap, *gmap, *bmap, *amap;
 
-int Width,Height;
+int Width, Height;
 
 #define PGM_FORMAT ((long)'P' * 256L + (long)'2')
 #define RPGM_FORMAT ((long)'P' * 256L + (long)'5')
@@ -96,4 +97,4 @@ int Width,Height;
 
 void *malloc();
 void *realloc();
-double pow(),sin(),cos(),tan(),asin(),acos(),atan2(),sqrt();
+double pow(), sin(), cos(), tan(), asin(), acos(), atan2(), sqrt();

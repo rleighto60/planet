@@ -3,3 +3,5 @@
 **/*.pdf
 bin/*
 test/*.jpg
+/.cproject
+/.project
