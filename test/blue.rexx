@@ -6,12 +6,11 @@ image
 generate
 'map(|jpegtopnm map/blue-map.jpg,full,40)'
 light 202020 'z-25' y45 x35
-planet 140 800 6 'z-20' y45 x15
+planet 140 800 10 'z-20' y45 x15
 generate
-'map(|jpegtopnm map/brown-ring.jpg)'
-'alpha(|jpegtopnm map/brown-ring.jpg|ppmtopgm)'
-light 404040 'z-25' y45 x35
-ring 220 340 100
+'map(|pngtopnm map/brown-ring.png)'
+'alpha(|pngtopnm -alpha map/brown-ring.png)'
+ring 220 340 60
 generate
 'save(|pnmtojpeg -quality 90 > blue.jpg)'
 exit
