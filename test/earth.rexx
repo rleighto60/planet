@@ -8,7 +8,8 @@ generate
 light 404040 'z-20' y15 x0
 planet 200 800 2 x35 z0 y110
 generate
-'map(|jpegtopnm map/cloud-map.jpg|pnmgamma 3.0,full,0,1,101010)'
+'map(|pnmscale -width 2048 -height 1024 map/white.pgm,full)'
+'alpha(|jpegtopnm map/cloud-map.jpg|ppmtopgm)'
 planet 202 800 0 x35 z0 y110
 generate
 'save(|pnmtojpeg -quality 90 > earth.jpg)'

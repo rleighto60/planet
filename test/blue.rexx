@@ -8,7 +8,8 @@ generate
 light 202020 'z-25' y45 x35
 planet 140 800 6 'z-20' y45 x15
 generate
-'map(|jpegtopnm map/brown-ring.jpg,full,0,100,010101)'
+'map(|jpegtopnm map/brown-ring.jpg)'
+'alpha(|jpegtopnm map/brown-ring.jpg|ppmtopgm)'
 light 404040 'z-25' y45 x35
 ring 220 340 100
 generate
