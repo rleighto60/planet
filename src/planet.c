@@ -23,6 +23,10 @@
 
 extern int parse(char *input, char *args[], int narg);
 
+double vabs(double value) {
+    return value < 0.0 ? -value : value;
+}
+
 /* Equate two matrices M = N */
 
 void mset(float (*n)[3], float (*m)[3]) {
@@ -48,6 +52,28 @@ void mmul(float (*n)[3], float (*m)[3]) {
         }
     }
     mset(p, m);
+}
+
+/* Divide two matrices together M = M/N */
+
+void mdiv(float (*n)[3], float (*m)[3]) {
+    int i, j;
+    float p[3][3], det = 0.0;
+
+    for (i = 0; i < 3; i++) {
+        det += (n[0][i]
+                * (n[1][(i + 1) % 3] * n[2][(i + 2) % 3]
+                        - n[1][(i + 2) % 3] * n[2][(i + 1) % 3]));
+    }
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            p[i][j] =
+                    ((n[(i + 1) % 3][(j + 1) % 3] * n[(i + 2) % 3][(j + 2) % 3])
+                            - (n[(i + 1) % 3][(j + 2) % 3]
+                                    * n[(i + 2) % 3][(j + 1) % 3])) / det;
+        }
+    }
+    mmul(p, m);
 }
 
 /* Equate two vectors M = N */
@@ -78,24 +104,41 @@ void vmul(float (*n)[3], float m[3]) {
 
 void rotate(int axis, int ang, float (*m)[3]) {
     int i, j, k;
-    float n[3][3];
+    float n[3][3], a;
 
     if (!ang)
         return;
 
     /* setup transformation matrix based on selected axis */
 
-   switch(axis) {
-      case 'x': i = 0; j = 1; k = 2; break;
-      case 'y': i = 1; j = 2; k = 0; break;
-      case 'z': i = 2; j = 0; k = 1; break;
-      default : i = 0; j = 1; k = 2; break;
-   }
+    switch (axis) {
+    case 'x':
+        i = 0;
+        j = 1;
+        k = 2;
+        break;
+    case 'y':
+        i = 1;
+        j = 2;
+        k = 0;
+        break;
+    case 'z':
+        i = 2;
+        j = 0;
+        k = 1;
+        break;
+    default:
+        i = 0;
+        j = 1;
+        k = 2;
+        break;
+    }
 
+    a = ang > 0 ? (float) ang + 0.5 : (float) ang - 0.5;
     n[i][i] = 1.0;
-    n[j][j] = n[k][k] = (float) cos((double) ang * PI / 180.0);
+    n[j][j] = n[k][k] = (float) cos((double) a * PI / 180.0);
     n[i][j] = n[i][k] = n[j][i] = n[k][i] = 0.0;
-    n[k][j] = (float) sin((double) ang * PI / 180.0);
+    n[k][j] = (float) sin((double) a * PI / 180.0);
     n[j][k] = -n[k][j];
 
     mmul(n, m);
@@ -286,7 +329,7 @@ int generate(int lflag, int depth) {
     long minx, maxx, miny, maxy, xoff;
     float f, calp, fdist, alp, pr, dr, af;
     float v[3], p[3], s[3];
-    float matr[3][3];
+    float matr[3][3], ring[3][3];
 
     /* determine minimum possible window to conserve computation */
     if (type & PICT) {
@@ -390,21 +433,20 @@ int generate(int lflag, int depth) {
                 p[0] = (x - (long) pcx) / aspect;
                 pr2 = p[0] * p[0] + p[1] * p[1];
 
-                // render ring shadow on planet surface
-                if ((pz2 = rr - pr2) >= 0L && light[2][1] != 0.0) {
-                    p[2] = (float) sqrt((double) pz2);
-                    pr = (float) sqrt((double) pr2);
+                mset(matr,ring);
+                mdiv(light,ring);
 
+                // render ring shadow on planet surface
+                if ((pz2 = rr - pr2) >= 0L && vabs(ring[2][1]) > 0.0001) {
+                    p[2] = (float) sqrt((double) pz2);
                     vset(p,v);
                     vmul(matr,v);
                     v2 = (v[0] * v[0] + v[2] * v[2]);
-
-                    f = (float) sqrt((double) v2) + (v[1] * light[2][2] / light[2][1]);
+                    f = (float) sqrt((double) v2) + (v[1] * ring[2][2] / ring[2][1]);
 
                     if ((f >= r1) && (f <= r2)) {
                         calp = (p[0] * light[0][2] + p[1] * light[1][2]
                                 + p[2] * light[2][2]) / (float) r;
-
                         if (calp > 1.0) calp = 1.0;
                         if (calp < 0.0) calp = 0.0;
                         alp = (float) atan2((double) v[2], (double) v[0]);
@@ -412,7 +454,7 @@ int generate(int lflag, int depth) {
                         ringmap((f - (float) r1) / (r2 - r1), alp, calp, af, TRUE);
                     }
                 }
-                if (matr[1][2] == 0.0)
+                if (vabs(matr[1][2]) <= 0.0001)
                     break;
                 p[2] = -(p[0] * matr[1][0] + p[1] * matr[1][1]) / matr[1][2];
                 vset(p,v);
