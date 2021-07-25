@@ -1,5 +1,4 @@
 /* macro for Planet */
-reset 1400
 view 1280 1440 6
 'map(|ppmforge -night -seed 203 -stars 200 -saturation 250 -xsize 1600 -ysize 1200)'
 image

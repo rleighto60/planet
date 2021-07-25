@@ -186,7 +186,7 @@ void map(float v[3], int da, float ca) {
     r1 = (int) rmap[pos];
     g1 = (int) gmap[pos];
     b1 = (int) bmap[pos];
-    a1 = da > 0 ? da : (int) amap[pos];
+    a1 = da >= 0 ? da : (int) amap[pos];
     if ((x < olap) && (olap != 0)) {
         pos += Width - olap;
         r2 = (int) rmap[pos];
@@ -209,7 +209,7 @@ void map(float v[3], int da, float ca) {
         b2 = ca * b1;
     else
         b2 = ba * b1;
-    cf = (float)a1/255.0;
+    cf = a1 / 255.0;
     rc = cf * r2 + (1.0 - cf) * rc;
     gc = cf * g2 + (1.0 - cf) * gc;
     bc = cf * b2 + (1.0 - cf) * bc;
@@ -219,14 +219,13 @@ void map(float v[3], int da, float ca) {
 void ringmap(float r, float ang, float ca, float af, int shadow) {
     long x, y;
     long pos;
-    int r1, g1, b1, a1, r2 = 0, g2 = 0, b2 = 0;
+    int r1, g1, b1, r2 = 0, g2 = 0, b2 = 0;
     float cf;
 
     x = (ang / PI + 1.0) * (Width - 1) / 2.0;
     y = r * (Height - 1);
 
     pos = y * Width + x;
-    a1 = (int) amap[pos];
     if (!shadow) {
         r1 = (int) rmap[pos];
         g1 = (int) gmap[pos];
@@ -254,7 +253,7 @@ void ringmap(float r, float ang, float ca, float af, int shadow) {
         else
             b2 = ba * b1;
     }
-    cf = af * (float)a1/255.0;
+    cf = af * (float) amap[pos] / 255.0;
     rc = cf * r2 + (1.0 - cf) * rc;
     gc = cf * g2 + (1.0 - cf) * gc;
     bc = cf * b2 + (1.0 - cf) * bc;
@@ -324,10 +323,10 @@ int generate(int lflag, int depth) {
     int d, da, r = 0, r1 = 0, r2 = 0;
     long pcx = 0, pcy = 0;
     long x, y, bpos, mpos;
-    long s2, v2, pa, pz2, rr = 0, rr1 = 0, rr2 = 0, pr2;
+    long s2, v2, pz2, rr = 0, rr1 = 0, rr2 = 0, pr2;
     long mcx, mcy, mcz = 0;
     long minx, maxx, miny, maxy, xoff;
-    float f, calp, fdist, alp, pr, dr, af;
+    float f, calp, fdist, alp, pa, pr, dr, af;
     float v[3], p[3], s[3];
     float matr[3][3], ring[3][3];
 
@@ -344,28 +343,28 @@ int generate(int lflag, int depth) {
                 if (lflag) rotate('y', -(dang >> 1), matr);
                 else rotate('y', (dang >> 1), matr);
             }
-            s2 = (mdist * xres) / wres;
+            s2 = (mdist * xres) / pdist;
             mcx = s2 * matr[0][2] * aspect;
             mcy = s2 * matr[1][2];
             mcz = s2 * matr[2][2];
         } else
             mcx = mcy = mcz = 0;
-        d = (pdist * xres) / wres - mcz;
+        d = (pdist * xres) / pdist - mcz;
         if (d <= 0)
             return (0);
         fdist = (float) zres / (float) d;
-        r = (rad * xres * fdist) / wres;
-        pcx = (xcen * xres) / wres + xres / 2;
+        r = (rad * xres * fdist) / pdist;
+        pcx = (xcen * xres) / pdist + xres / 2;
         if (dang) {
             if (lflag) pcx -= depth >> 1;
             else pcx += depth >> 1;
         }
-        pcy = (ycen * xres) / wres + yres / 2;
-        pcx += mcx * (float) wres / (float) pdist;
-        pcy -= mcy * (float) wres / (float) pdist;
+        pcy = (ycen * xres) / pdist + yres / 2;
+        pcx += mcx * (float) pdist / (float) pdist;
+        pcy -= mcy * (float) pdist / (float) pdist;
         if (type & RING) {
-            r1 = (rad1 * xres * fdist) / wres;
-            r2 = (rad2 * xres * fdist) / wres;
+            r1 = (rad1 * xres * fdist) / pdist;
+            r2 = (rad2 * xres * fdist) / pdist;
             rr1 = (long) r1 * r1;
             rr = r * r;
         } else
@@ -387,7 +386,7 @@ int generate(int lflag, int depth) {
         }
         mmul(trans, matr);
     }
-    pa = (patmo * xres) / wres;
+    pa = (patmo * xres) / pdist;
 
     if (lflag)
         xoff = xres;
@@ -473,16 +472,16 @@ int generate(int lflag, int depth) {
                         /* transition into shaded part */
                         if (s[2] < 0) {
                             dr = (float) sqrt((double) s2) - (float) r;
-                            if (dr <= (float) pa)
-                                calp *= dr / (float) pa;
+                            if (dr <= pa)
+                                calp *= dr / pa;
                         }
                     }
                     /* transition into planet atmosphere */
                     af = 1.0;
                     if (p[2] < 0) {
                         dr = (float) r - (float) sqrt((double) (p[0] * p[0] + p[1] * p[1]));
-                        if ((dr > 0) && (dr <= (float) pa))
-                            af = ((float) pa - dr) / pa;
+                        if ((dr > 0) && (dr <= pa))
+                            af = (pa - dr) / pa;
                     }
 
                     f = (float) sqrt((double) v2);
@@ -514,10 +513,10 @@ int generate(int lflag, int depth) {
                     vmul(matr,v);
                     dr = (float) r2 - pr;
 
-                    if (dr <= (float) pa)
-                        da = 255.0 * (1.0 - ((float) pa - dr) / pa);
+                    if (dr <= pa)
+                        da = 255.0 * (1.0 - (pa - dr) / pa);
                     else
-                        da = 0;
+                        da = -1.0;
 
                     /* compute cosine of angle between normal and light source */
                     calp = (p[0] * light[0][2] + p[1] * light[1][2]
@@ -528,22 +527,6 @@ int generate(int lflag, int depth) {
 
                     /* get color from planet map */
                     map(v, da, calp);
-                    if (!pixel) {
-                        if ((abuf[bpos >> 3] >> (7 - ((x + xoff) & 7))) & 1)
-                            break;
-
-                        vset(p,v);
-                        vmul(matr,v);
-
-                        /* compute cosine of angle between normal and light source */
-                        calp = -(p[0] * light[0][2] + p[1] * light[1][2]
-                                + p[2] * light[2][2]) / (float) r2;
-
-                        if (calp > 1.0) calp = 1.0;
-                        if (calp < 0.0) calp = 0.0;
-
-                        map(v, da, calp);
-                    }
                 }
                 break;
             }
@@ -568,7 +551,7 @@ void reset() {
     identity(trans);
     identity(light);
     identity(shade);
-    xres = zres = wres = vres = 320L;
+    xres = zres = vres = 320L;
     yres = 200L;
     xcen = 0L;
     ycen = 0L;
@@ -895,9 +878,9 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
     char *args[MAXARG], *args0;
     char field[80];
     char *icom, *ocom;
-    char commands[14][10] =
+    char commands[11][10] =
             { "generate", "save", "planet", "moon", "ring", "light", "map",
-              "alpha", "image", "center", "reset", "view", "stop", "status" };
+              "alpha", "image", "center", "view" };
     int ncom = 13;
     /*  long primary=0; */
     int i, m, n, nc, argn;
@@ -978,7 +961,7 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
              result:  none
              *******************************************************************************/
         case 2:
-            pdist = wres;
+            pdist = 100;
             patmo = 0;
             mdist = 0;
             prad = mrad = 100;
@@ -1178,20 +1161,6 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
             break;
 
             /*******************************************************************************
-             reset(wres) - reset all parameters and free up memory
-             where:   wres    = width in world coord
-             result:  none
-             *******************************************************************************/
-        case 10:
-            close_map();
-            close_things();
-            made = 0;
-            reset();
-            if (argn > 1)
-                sscanf(args[1], "%ld", &wres);
-            break;
-
-            /*******************************************************************************
              view(xres,yres,dang,aspect) - set view
              where:   xres    = x resolution of view
              yres    = y resolution of view
@@ -1199,9 +1168,11 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
              aspect  = aspect ratio of view
              result:  none
              *******************************************************************************/
-        case 11:
+        case 10:
+            close_map();
             close_things();
             made = 0;
+            reset();
             if (argn > 1)
                 sscanf(args[1], "%ld", &xres);
             if (argn > 2)
@@ -1213,19 +1184,7 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
             zres = xres;
             break;
 
-            /*******************************************************************************
-             stop - remove window and shut down
-             result:  none
-             *******************************************************************************/
-        case 12:
-            close_down = TRUE;
-            break;
-
-        case 13:
-            sprintf(field, "awaiting command");
-            break;
-
-        case 14:
+        case 11:
             fprintf(stderr, "main - unknown command\n");
             break;
 

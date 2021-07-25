@@ -70,9 +70,6 @@ APIRET APIENTRY planetHandler( PRXSTRING, PUSHORT, PRXSTRING);
 
 char hostname[] = "PLANET";
 
-int close_down = FALSE;
-int outstanding = 0;
-
 unsigned int mask = 0, type = 0, made = 0;
 int rc, gc, bc;
 float ra, ga, ba;
@@ -84,7 +81,7 @@ float aspect;
 int pdist, mdist, patmo;
 int print = FALSE;
 int pipe = FALSE;
-long xres, yres, zres, vres, wres, xcen, ycen;
+long xres, yres, zres, vres, xcen, ycen;
 UBYTE *rbuf, *gbuf, *bbuf, *abuf;
 UBYTE *rmap, *gmap, *bmap, *amap;
 
