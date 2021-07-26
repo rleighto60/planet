@@ -997,7 +997,8 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
              moon(radius,distance,angle(s),..) - create moon
              where:   radius   = the radius of the moon
              distance = the distance from the planet
-             angle(s) = upto three angles (degrees) preceded by axis of rotation
+             atmo     = thickness of atmosphere
+             angle(s) = angles (degrees) preceded by axis of rotation
              (x,y or z)
              result:  none
              *******************************************************************************/
@@ -1013,9 +1014,13 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
                 if (sscanf(args[2], "%d", &i))
                     mdist = i;
             }
-            identity(trans);
             if (argn > 3) {
-                for (i = 3; i < argn; ++i) {
+                if (sscanf(args[3], "%d", &i))
+                    patmo = i;
+            }
+            identity(trans);
+            if (argn > 4) {
+                for (i = 4; i < argn; ++i) {
                     if (sscanf(args[i], "%*c %d", &ang) == 1)
                         rotate(args[i][0] | ' ', -ang, trans);
                 }
