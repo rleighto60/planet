@@ -16,7 +16,9 @@ Any number of planets, moons, or rings may be generated in one image. Also, any 
 
 An option for generating moons is included to allow for logical placement of planets with respect to each other. If a moon is specified then its location is determined from a distance from the planet center and the rotation of the respective planet.
 
-Additionally, rings may be generated, relative to a planet, by specifying an image map that is mapped on a ring centered around the planet by defining an inner and outer radius. The generated ring image will be shaded based on the specified light source location and planet position.
+Additionally, rings may be generated, relative to a planet, by specifying an image map that is mapped on a ring centered around the planet by defining an inner and outer radius. The generated ring image will be shaded based on the specified light source location and planet position. The shadow of the ring on the planet surface is generated based on light source location.
+
+Finally, 3D images (stereo pairs) may also be produced by specifying shift and angle separations.
 
 ## Prerequisites
 
