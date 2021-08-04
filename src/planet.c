@@ -360,8 +360,8 @@ int generate(int lflag, int depth) {
             else pcx += depth >> 1;
         }
         pcy = (ycen * xres) / pdist + yres / 2;
-        pcx += mcx * (float) pdist / (float) pdist;
-        pcy -= mcy * (float) pdist / (float) pdist;
+        pcx += mcx;
+        pcy -= mcy;
         if (type & RING) {
             r1 = (rad1 * xres * fdist) / pdist;
             r2 = (rad2 * xres * fdist) / pdist;
