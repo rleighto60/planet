@@ -28,4 +28,4 @@ Finally, 3D images (stereo pairs) may also be produced by specifying shift and a
 
 ## Documentation
 
-![User Guide](planet.pdf)
+![User Guide](doc/planet.pdf)
