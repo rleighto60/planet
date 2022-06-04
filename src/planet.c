@@ -928,7 +928,7 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
          result:  none
          *******************************************************************************/
         case 0:
-            i = 0;
+            depth = 0;
             if (!open_things()) {
                 close_things();
                 fprintf(stderr,
@@ -936,10 +936,10 @@ APIRET APIENTRY planetHandler(PRXSTRING command, PUSHORT flags,
                 return (0);
             }
             if (argn > 1)
-                sscanf(args[1], "%d", &i);
-            generate(0, i);
+                sscanf(args[1], "%d", &depth);
+            generate(0, depth);
             if (dang)
-                generate(1, i);
+                generate(1, depth);
             break;
 
             /*******************************************************************************

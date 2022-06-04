@@ -78,7 +78,7 @@ int rad, prad, mrad, rad1, rad2, shad, olap;
 float trans[3][3], moon[3][3];
 float light[3][3], shade[3][3];
 float aspect;
-int pdist, mdist, patmo;
+int pdist, patmo, mdist, depth;
 int print = FALSE;
 int pipe = FALSE;
 long xres, yres, zres, vres, xcen, ycen;
